@@ -117,9 +117,17 @@ Tracker.prototype = {
 
     movePanel: function(direction) {
         if (direction === "down") {
-            console.log('move down a panel');
+            if (this.panelIndex >= this.panels.length) {
+                return false
+            } else {
+                scrollTo(0,(window.innerHeight * this.panelIndex))
+            }
         } else {
-            console.log('move up a panel');
+            if (this.panel <= 1) {
+                return false
+            } else {
+                scrollTo(0,(window.innerHeight * (this.panelIndex - 2)))
+            }
         }
     },
 
