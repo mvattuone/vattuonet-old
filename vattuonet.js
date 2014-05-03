@@ -120,13 +120,17 @@ Tracker.prototype = {
             if (this.panelIndex >= this.panels.length) {
                 return false
             } else {
-                scrollTo(0,(window.innerHeight * this.panelIndex))
+                $('body').animate({
+                    scrollTop: window.innerHeight * this.panelIndex
+                }, 500);
             }
         } else {
             if (this.panel <= 1) {
                 return false
             } else {
-                scrollTo(0,(window.innerHeight * (this.panelIndex - 2)))
+                $('body').animate({
+                    scrollTop: ($(document).scrollTop() - (window.innerHeight))
+                }, 500);
             }
         }
     },
