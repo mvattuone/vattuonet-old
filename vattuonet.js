@@ -115,20 +115,20 @@ Tracker.prototype = {
         }
     },
 
-    movePanel: function(direction) {
+    movePanel: function(direction, callback) {
         if (direction === "down") {
             if (this.panelIndex >= this.panels.length) {
                 return false
             } else {
-                $('body').animate({
+                $('body,html').animate({
                     scrollTop: window.innerHeight * this.panelIndex
-                }, 500);
+                }, 500);            
             }
         } else {
             if (this.panel <= 1) {
                 return false
             } else {
-                $('body').animate({
+                $('body,html').animate({
                     scrollTop: ($(document).scrollTop() - (window.innerHeight))
                 }, 500);
             }
@@ -142,13 +142,33 @@ Tracker.prototype = {
             tracker.handleThreshold();
         });
 
-        $(document).on('keydown', function(e){
-            if(e.keyCode === 40) {
-                e.preventDefault();
+        $('body,html').on('wheel', function(e) {
+            if (window.preventDuplicateMouseWheelScrolls)
+                return false;
+            window.preventDuplicateMouseWheelScrolls = true;
+            window.setTimeout(function() { window.preventDuplicateMouseWheelScrolls = false; }, 1100 );
+            if (e.originalEvent.wheelDelta > 0) {
+                tracker.movePanel('up', function() { return false; });
+            } else {
+                tracker.movePanel('down', function() { return false; });
+            }
+            e.preventDefault();
+            e.stopPropagation();
+        })
+
+        $(document).on('keydown', function(event){
+            if (window.preventDuplicateKeyPresses)
+                return false;
+
+            window.preventDuplicateKeyPresses = true;
+            window.setTimeout(function() { window.preventDuplicateKeyPresses = false; }, 600 );
+            var unicode = event.keyCode ? event.keyCode : event.charCode;
+            if(unicode === 40) {
+                event.preventDefault();
                 tracker.movePanel('down');
             }
-            if(e.keyCode === 38){
-                e.preventDefault();
+            if(unicode === 38){
+                event.preventDefault();
                 tracker.movePanel('up');
             }
         });
